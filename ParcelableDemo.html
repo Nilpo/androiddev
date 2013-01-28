@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Androiddev by ramdroid</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Parcelable</h1>
+        <h2>Exchange data between Android components</h2>
+
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h3>Introduction</h3>
+
+<p>When you launch an activity or service you often need to attach some information. In a simple situation this could only be a single value like an integer or string and you can use something like that:</p>
+
+<pre><code>Intent intent = new Intent(this, NewActivity.class);
+intent.putExtra("value", 42);
+startActivity(intent);
+</code></pre>
+
+<p>If you are using a lot more values then this approach would be little awkward. It would also be useful if you could forward your own classes with an intent.</p>
+
+<h3>Solution</h3>
+
+<p>Actually it's quite easy to do so: you only have to extend your class from <code>Parcelable</code> and define a <code>Parcelable.Creator</code>:</p>
+
+<pre><code>public static final Parcelable.Creator<SomeData> CREATOR = 
+    new Parcelable.Creator<SomeData>() {
+
+    public SomeData createFromParcel(Parcel in) {
+        return new SomeData(in);
+    }
+
+    public SomeData[] newArray(int size) {
+        return new SomeData[size];
+    }
+};
+</code></pre>
+
+<p>Then define the functions to read/write the values into the Parcel:</p>
+
+<pre><code>@Override
+public void writeToParcel(Parcel out, int flags) {
+    out.writeInt(someInteger);
+    out.writeString(someString);
+}
+
+private SomeData(Parcel in) {
+    this.someInteger = in.readInt();
+    this.someString = in.readString();
+}
+</code></pre>
+
+<h3>Sample project</h3>
+
+<p>Check out the full sample project on Github! Fork and pull if you know any improvements...</p>
+
+      <a href="https://github.com/ramdroid/androiddev/tree/master/ParcelableDemo" class="btn btn-github" target="_blank">
+        <span class="icon"></span>View sample</a>
+
+    </section>
+    </div>
+
+    
+  </body>
+</html>
