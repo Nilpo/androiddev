@@ -222,6 +222,11 @@ hr {
   background: url("../images/blacktocat.png") 0 0 no-repeat;
 }
 
+.btn-android .icon {
+  opacity: 0.6;
+  background: url("../images/android.png") 0 0 no-repeat;
+}
+
 .btn-googleplus .icon {
   opacity: 0.6;
   background: url("../images/googleplus.png") 0 0 no-repeat;
