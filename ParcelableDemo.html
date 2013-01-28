@@ -24,7 +24,7 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>Introduction</h3>
+        <h3>Problem</h3>
 
 <p>When you launch an activity or service you often need to attach some information. In a simple situation this could only be a single value like an integer or string and you can use something like that:</p>
 
@@ -65,6 +65,8 @@ private SomeData(Parcel in) {
     this.someString = in.readString();
 }
 </code></pre>
+
+<p>That's it! Of course you need to be careful to read the values in the same order as you wrote them.</p>
 
 <h3>Sample code</h3>
 
