@@ -1,5 +1,11 @@
 .idea/
 *.iml
+*~
+
 gen
 out
+
+ant.properties
+build.xml
+local.properties
 
