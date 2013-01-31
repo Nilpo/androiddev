@@ -39,8 +39,8 @@ startActivity(intent);
 
 <p>Actually it's quite easy to do so: you only have to extend your class from <code>Parcelable</code> and define a <code>Parcelable.Creator</code>:</p>
 
-<pre><code>public static final Parcelable.Creator<SomeData> CREATOR = 
-    new Parcelable.Creator<SomeData>() {
+<pre><code>public static final Parcelable.Creator&lt;SomeData&gt; CREATOR = 
+    new Parcelable.Creator&lt;SomeData>() {
 
     public SomeData createFromParcel(Parcel in) {
         return new SomeData(in);
@@ -52,7 +52,7 @@ startActivity(intent);
 };
 </code></pre>
 
-<p>Then define the functions to read/write the values into the Parcel:</p>
+<p>Then define the functions to read/write the values into the <code>Parcel</code>:</p>
 
 <pre><code>@Override
 public void writeToParcel(Parcel out, int flags) {
@@ -66,11 +66,35 @@ private SomeData(Parcel in) {
 }
 </code></pre>
 
-<p>That's it! Of course you need to be careful to read the values in the same order as you wrote them.</p>
+<p>You only need to be careful to read the values in the same order as you wrote them.</p>
+
+<h3>Advanced</h3>
+
+<p>In some use cases you might have a list of your <code>Parcelable</code> objects. You need to use them like that:</p>
+
+<pre><code>public List&lt;SomeData&gt; someDataList = new ArrayList&lt;SomeData&gt;();
+
+@Override
+public void writeToParcel(Parcel out, int flags) {
+    out.writeTypedList(someDataList);
+}
+
+private SomeData(Parcel in) {
+    in.readTypedList(someDataList, SomeData.CREATOR);
+}
+</code></pre>
+
+<h3>Auto-generator</h3>
+
+<p>There's a generator that automatically generates the <code>Parcel</code> read/write functions for you. You only need to enter your class members and the builder does all the work:<p>
+
+<a href="http://dallasgutauckis.com/2012/01/20/parcelabler-for-implementing-androids-parcelable-interface/" target="_blank">http://dallasgutauckis.com/2012/01/20/parcelabler-for-implementing-androids-parcelable-interface/</a>
+
+<p>Of course this only works for known data types. If you have your own data types (like the SomeData list in the example above) then it will not work.</p></p>
 
 <h3>Sample code</h3>
 
-<p>Check out the full sample project on Github! Fork and send a pull request if you want to contribute...</p>
+<p>Check out the full sample project on Github! Fork and send me a pull request if you want to contribute...</p>
 
       <a href="https://github.com/ramdroid/androiddev/tree/master/ParcelableDemo" class="btn btn-github" target="_blank">
         <span class="icon"></span>View sample</a>
