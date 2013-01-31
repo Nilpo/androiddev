@@ -22,20 +22,31 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SomeActivity extends Activity
 {
-    private SomeData someData = new SomeData(42, "Something");
+    private SomeData someData1 = new SomeData(42, "Something1");
+    private SomeData someData2 = new SomeData(43, "Something2");
+    private MoreData moreData = new MoreData();
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        moreData.add(someData1);
+        moreData.add(someData2);
+
         setContentView(R.layout.some);
-        ((TextView)findViewById(R.id.someText)).setText(someData.toString());
+        ((TextView)findViewById(R.id.someText)).setText(moreData.toString());
     }
 
     public void doSomething(View v) {
-        startActivity(new Intent(this, YetSomeActivity.class).putExtra("Something", someData));
+        startActivity(new Intent(this, YetSomeActivity.class)
+                .putExtra("Something", someData1)
+                .putExtra("SomeMore", moreData));
     }
 }

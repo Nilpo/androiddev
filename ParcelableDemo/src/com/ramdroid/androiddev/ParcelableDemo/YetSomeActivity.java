@@ -30,6 +30,7 @@ import android.widget.TextView;
 public class YetSomeActivity extends Activity {
 
     private SomeData someData = new SomeData();
+    private MoreData moreData = new MoreData();
 
     /** Called when the activity is first created. */
     @Override
@@ -39,6 +40,8 @@ public class YetSomeActivity extends Activity {
         setContentView(R.layout.yetsome);
 
         someData = getIntent().getParcelableExtra("Something");
-        ((TextView)findViewById(R.id.someText)).setText(someData.toString());
+        moreData = getIntent().getParcelableExtra("SomeMore");
+
+        ((TextView)findViewById(R.id.someText)).setText(moreData.toString());
     }
 }
