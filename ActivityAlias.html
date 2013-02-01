@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Androiddev by ramdroid</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>ActivityAlias</h1>
+        <h2>Change your app's launcher icon</h2>
+
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h3>Problem</h3>
+
+<p>Ever went through the trouble that users gave bad ratings when you'd introduced a new icon for your app? When trying to add an option to switch back to the old icon you'll end up with the same answer over and over gain: <i>"This is never possible"</i>.</p> 
+
+<p>Today is your lucky day because it is possible... based on a simple XML tag which is available since API level 1!</p>
+
+<h3>Solution</h3>
+
+<p>Ever heard of <code>activity-alias</code>? You can use it to extend the <code>activity</code> tag in your <code>AndroidManifest.xml</code> and change the attributes. So we create multiple aliases and choose a different icon for each one. In order for it to work you have to make sure that only one of them is enabled:</p>
+
+<pre><code>&lt;activity android:name="MyActivity" android:label="@string/app_name"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.MAIN"/&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity&gt;
+
+&lt;activity-alias android:targetActivity="MyActivity"
+                android:name="MyActivity-green"
+                android:icon="@drawable/ic_launcher_green"
+                android:enabled="false"
+                android:label="@string/app_name"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.MAIN"/&gt;
+        &lt;category android:name="android.intent.category.LAUNCHER"/&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity-alias&gt;
+
+&lt;activity-alias android:targetActivity="MyActivity"
+                android:name="MyActivity-red"
+                android:icon="@drawable/ic_launcher_red"
+                android:enabled="true"
+                android:label="@string/app_name"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.MAIN"/&gt;
+        &lt;category android:name="android.intent.category.LAUNCHER"/&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity-alias&gt;
+</code></pre>
+
+<p>If you ever dealt with <code>BroadcastReceivers</code> then you hopefully know that you should disable them if you don't need them using <code>setComponentEnabledSetting</code>.</p>
+
+<p>This is also the approach you'll use to change your <code>activity-alias</code> from code:</p>
+
+<pre><code>ComponentName activityAlias = new ComponentName(getPackageName(), 
+    getPackageName() + ".MyActivity-green");
+
+int componentEnabledState = enabled ?
+    PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+    PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+getPackageManager().setComponentEnabledSetting(activityAlias, 
+    componentEnabledState, PackageManager.DONT_KILL_APP);
+</code></pre>
+
+<p>So you disable all <code>activity-alias</code> you don't need and only enable the one you need.</p>
+
+<p>Now there are still two issues to solve! First thing you'll see is that your icon in the ActionBar is no longer up-to-date. The fix for this one is dead easy, for example:</p>
+
+<pre><code>getActionBar().setIcon(R.drawable.ic_launcher_red);
+</code></pre>
+
+<p>The next issue is that the launcher didn't update the new icon properly. You'll either see two icons or see it completely disappear. Here we just go ahead and kill the launcher app. Once you go back to your home screen the system will automatically restart it:
+</p>
+
+<pre><code>ActivityManager am = (ActivityManager) 
+    getSystemService(Context.ACTIVITY_SERVICE);
+am.killBackgroundProcesses(the_packagename_of_the_default_launcher);
+</code></pre>
+
+<p>Unfortunately you need to add the <code>KILL_BACKGROUND_PROCESSES</code> permission for accessing this API.
+
+<h3>Concerns</h3>
+
+<p>Now that you know how to change your app's icon and prove wrong all the rumors that this is not possible, let me also talk about few concerns:</p>
+
+<p>Generally you should believe in your own vision of your app! If you ever decide to use a new icon/logo for your app then stick to it! There'll always be people who won't like it or want to get back the previous one. On the other side if your new icon is really horrible and you regret your decision then you'll realize this and get a new one. <b>Usually you should stick to just one icon! This icon is important, it defines your brand!</b></p>
+
+<p>Changing the icon is really straight forward, however <b>the hack to restart the launcher is not really recommended for a normal app</b>. If you have a note editing app and ask for the <code>KILL_BACKGROUND_PROCESSES</code> permission then this will give your users a strange feeling. So decide carefully if you really need to use this in your app!
+
+<h3>Credits</h3>
+
+<p>This article was inspired by <a href="https://play.google.com/store/apps/details?id=eu.chainfire.supersu" target="_blank">SuperSU</a> which is (as far as I know) the first app that allows you to change the app's launcher icon.</p>
+
+<h3>Sample code</h3>
+
+<p>Check out the full sample project on Github! Fork and send me a pull request if you want to contribute...</p>
+
+      <a href="https://github.com/ramdroid/androiddev/tree/master/ActivityAliasDemo" class="btn btn-github" target="_blank">
+        <span class="icon"></span>View sample</a>
+
+      <a href="https://developer.android.com/guide/topics/manifest/activity-alias-element.html" class="btn btn-android" target="_blank">
+        <span class="icon"></span>Reference API</a>
+
+    </section>
+    </div>
+
+    
+  </body>
+</html>
