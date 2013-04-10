@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Androiddev by ramdroid</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>ResultReceiver</h1>
+        <h2>Receive data from Services</h2>
+
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h3>Problem</h3>
+
+<p>When running a <code>Service</code> you might want to send back the result to the calling <code>Activity</code>.
+In order to achieve this you could use broadcasts (which adds some unneccessary complexity)
+or cheat around with static variables in the service object (very bad idea).</p>
+
+<p><i><small>The problem could also be solved by using a 3rd party library (like for instance EventBus) but
+explaining why I don't want to do this goes beyond this little tutorial.</small></i></p>
+
+<h3>Solution</h3>
+
+<p>The documentation says <code>ResultReceiver</code> is a <i>Generic interface for receiving a callback result from someone.</i></p>
+
+<p>This is exactly what we need! First we implement the <code>Activity</code> that attaches a <code>ResultReceiver</code> object to the start intent:</p>
+
+<pre><code>Intent i = new Intent(this, SomeService.class);
+i.putExtra(SomeService.EXTRA, new ResultReceiver(null) {
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle resultData) {
+        // here we receive the result
+    }
+});
+startService(i);
+</code></pre>
+
+<p>In the next step we implement the <code>Service</code> code that fires back a result:</p>
+
+<pre><code>ResultReceiver resultReceiver = intent.getParcelableExtra(EXTRA);
+Bundle resultData = new Bundle();
+resultData.putString("result", "This is some text.");
+resultReceiver.send(RESULT, resultData);
+</code></pre>
+
+<p>That's it! Isn't this a nice and simple way?</p>
+
+<h3>Using IntentService</h3>
+
+<p>Often you'll be using an <code>IntentService</code> and there's one thing you need to take care of!<p>
+
+<p>The <code>IntentService</code> runs the <code>onHandleIntent</code> in a background thread and this
+means you'll get the result in the same thread. So if you want to show the result in the UI you first
+need to post it back to the UI thread:</p>
+
+<pre><code>protected void onReceiveResult(int resultCode, Bundle resultData) {
+    if (resultCode == LongService.RESULT) {
+        final String result = resultData.getString("result");
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // show result in UI
+            }
+        });
+    }
+}
+</code></pre>
+
+<h3>Sample code</h3>
+
+<p>Check out the full sample project on Github! Fork and send me a pull request if you want to contribute...</p>
+
+      <a href="https://github.com/ramdroid/androiddev/tree/master/ResultReceiverDemo" class="btn btn-github" target="_blank">
+        <span class="icon"></span>View sample</a>
+
+      <a href="http://developer.android.com/reference/android/os/ResultReceiver.html" class="btn btn-android" target="_blank">
+        <span class="icon"></span>Reference API</a>
+
+    </section>
+    </div>
+
+    
+  </body>
+</html>
