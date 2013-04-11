@@ -42,42 +42,42 @@ public class SomeActivity extends Activity
         ((TextView)findViewById(R.id.someText)).setText(text);
     }
 
-    public void getSomeText(View v) {
+    public void onClickedStartService(View v) {
         Intent i = new Intent(this, SomeService.class);
-        i.putExtra(SomeService.REQUEST_RECEIVER_EXTRA, new ResultReceiver(null) {
-            @Override
-            protected void onReceiveResult(int resultCode, Bundle resultData) {
-                if (resultCode == SomeService.RESULT_ID_QUOTE) {
-                    String result = resultData.getString("result");
-                    updateText(result);
-                }
-            }
-        });
+        i.putExtra(SomeService.RECEIVER_EXTRA, someResultReceiver);
         startService(i);
+        onServiceStarted();
     }
 
-    public void getAnotherOne(View v) {
+    public void onClickedNextNumber(View v) {
+        Intent i = new Intent(SomeService.ACTION_SEND_SOMETHING);
+        sendBroadcast(i);
+    }
+
+    private void onServiceStarted() {
         setProgressBarIndeterminateVisibility(true);
-        Intent i = new Intent(this, LongService.class);
-        i.putExtra(LongService.REQUEST_RECEIVER_EXTRA, new ResultReceiver(null) {
-            @Override
-            protected void onReceiveResult(int resultCode, Bundle resultData) {
-                if (resultCode == LongService.RESULT_ID_QUOTE) {
-                    final String result = resultData.getString("result");
-
-                    // the result is still in the other thread, so we have to make sure
-                    // that the text is updated back in the UI thread!
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            setProgressBarIndeterminateVisibility(false);
-                            updateText(result);
-                        }
-                    });
-                }
-            }
-        });
-        startService(i);
+        findViewById(R.id.buttonStartService).setEnabled(false);
+        findViewById(R.id.buttonNextNumber).setEnabled(true);
     }
 
+    private void onServiceFinished() {
+        setProgressBarIndeterminateVisibility(false);
+        findViewById(R.id.buttonStartService).setEnabled(true);
+        findViewById(R.id.buttonNextNumber).setEnabled(false);
+    }
+
+    final ResultReceiver someResultReceiver = new ResultReceiver(handler) {
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            if (resultCode == SomeService.DATA) {
+                String result = resultData.getString("result");
+                updateText(result);
+            }
+            else if (resultCode == SomeService.FINISHED) {
+                String result = resultData.getString("result");
+                updateText(result);
+                onServiceFinished();
+            }
+        }
+    };
 }

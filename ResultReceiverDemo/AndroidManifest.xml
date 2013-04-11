@@ -13,6 +13,5 @@
             </intent-filter>
         </activity>
         <service android:name=".SomeService" />
-        <service android:name=".LongService" />
     </application>
 </manifest>

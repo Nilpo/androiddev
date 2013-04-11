@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ResultReceiverDemo</string>
-    <string name="getSomeText">Get some text</string>
-    <string name="getAnotherOne">Get another one</string>
+    <string name="startService">Start service</string>
+    <string name="getNextNumber">Get next number</string>
 </resources>
