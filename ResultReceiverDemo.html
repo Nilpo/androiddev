@@ -17,7 +17,7 @@
     <header>
       <div class="container">
         <h1>ResultReceiver</h1>
-        <h2>Receive data from Services</h2>
+        <h2>Receive results from a service</h2>
 
       </div>
     </header>
@@ -26,8 +26,9 @@
       <section id="main_content">
         <h3>Problem</h3>
 
-<p>When running a <code>Service</code> you might want to send back the result to the calling <code>Activity</code>.
-In order to achieve this you could use multiple broadcasts (which adds some unneccessary complexity)
+<p>When running a <code>Service</code> you might want to send back some results to the calling <code>Activity</code>.</p>
+
+<p>In order to achieve this you could use multiple broadcasts (which adds some unneccessary complexity)
 or cheat around with static variables in the service object (very bad idea).</p>
 
 <p><i><small>The problem could also be solved by using a 3rd party library (like for instance EventBus) but
@@ -49,10 +50,10 @@ i.putExtra(SomeService.EXTRA, new ResultReceiver(handler) {
 startService(i);
 </code></pre>
 
-<p>Notice the <code>handler</code> parameter in the <code>ResultReceiver</code> constructor! When you are using an
-<code>IntentService</code> then <code>onHandleIntent</code> is executed in a background thread, and accordingly then
-response would be fired from this thread too. By adding this handler you make sure that you'll receive the response
-back in the UI thread.
+<p>Notice the <code>handler</code> parameter in the <code>ResultReceiver</code> constructor:</p>
+
+<p>Usually your service code is executed in a background thread and accordingly the result would be fired from the same thread. 
+By adding this handler you make sure you always receive the result back in the UI thread.
 
 <p>In the next step we implement the <code>Service</code> code that fires back a result:</p>
 
@@ -62,11 +63,11 @@ resultData.putString("result", "This is some text.");
 resultReceiver.send(RESULT, resultData);
 </code></pre>
 
-<p>That's it! Isn't this a nice and simple way?</p>
+<p>That's it! Isn't this a nice and elegant way?</p>
 
-<h3>Handling multiple results</h3>
+<h3>Handling multiple actions</h3>
 
-<p>If you need to handle multiple actions and results then this still can be done easily.</p>
+<p>If you need to handle multiple actions then this still can be done fairly easily.</p>
 
 <p>In the activity this is just as simple as sending a broadcast to the service:</p>
 
@@ -95,6 +96,9 @@ registerReceiver(receiver, filter);
     }
 }
 </code></pre>
+
+<p>Keep in mind that you should return from this callback as quickly as possible. The idea here is that
+you only check some status in the service or add some data into a queue for later processing.</p>
 
 <h3>Sample code</h3>
 
