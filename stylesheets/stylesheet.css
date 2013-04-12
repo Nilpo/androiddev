@@ -216,6 +216,16 @@ hr {
   float: left;
 }
 
+.btn-home .icon {
+  opacity: 0.6;
+  background: url("../images/home.png") 0 0 no-repeat;
+}
+
+.btn-contact .icon {
+  opacity: 0.6;
+  background: url("../images/contact.png") 0 0 no-repeat;
+}
+
 .btn-github .icon {
   opacity: 0.6;
   background: url("../images/blacktocat.png") 0 0 no-repeat;
