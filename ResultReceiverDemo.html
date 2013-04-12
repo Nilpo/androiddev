@@ -27,7 +27,7 @@
         <h3>Problem</h3>
 
 <p>When running a <code>Service</code> you might want to send back the result to the calling <code>Activity</code>.
-In order to achieve this you could use broadcasts (which adds some unneccessary complexity)
+In order to achieve this you could use multiple broadcasts (which adds some unneccessary complexity)
 or cheat around with static variables in the service object (very bad idea).</p>
 
 <p><i><small>The problem could also be solved by using a 3rd party library (like for instance EventBus) but
@@ -40,7 +40,7 @@ explaining why I don't want to do this goes beyond this little tutorial.</small>
 <p>This is exactly what we need! First we implement the <code>Activity</code> that attaches a <code>ResultReceiver</code> object to the start intent:</p>
 
 <pre><code>Intent i = new Intent(this, SomeService.class);
-i.putExtra(SomeService.EXTRA, new ResultReceiver(null) {
+i.putExtra(SomeService.EXTRA, new ResultReceiver(handler) {
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         // here we receive the result
@@ -48,6 +48,11 @@ i.putExtra(SomeService.EXTRA, new ResultReceiver(null) {
 });
 startService(i);
 </code></pre>
+
+<p>Notice the <code>handler</code> parameter in the <code>ResultReceiver</code> constructor! When you are using an
+<code>IntentService</code> then <code>onHandleIntent</code> is executed in a background thread, and accordingly then
+response would be fired from this thread too. By adding this handler you make sure that you'll receive the response
+back in the UI thread.
 
 <p>In the next step we implement the <code>Service</code> code that fires back a result:</p>
 
@@ -59,23 +64,34 @@ resultReceiver.send(RESULT, resultData);
 
 <p>That's it! Isn't this a nice and simple way?</p>
 
-<h3>Using IntentService</h3>
+<h3>Handling multiple results</h3>
 
-<p>Often you'll be using an <code>IntentService</code> and there's one thing you need to take care of!<p>
+<p>If you need to handle multiple actions and results then this still can be done easily.</p>
 
-<p>The <code>IntentService</code> runs the <code>onHandleIntent</code> in a background thread and this
-means you'll get the result in the same thread. So if you want to show the result in the UI you first
-need to post it back to the UI thread:</p>
+<p>In the activity this is just as simple as sending a broadcast to the service:</p>
 
-<pre><code>protected void onReceiveResult(int resultCode, Bundle resultData) {
-    if (resultCode == LongService.RESULT) {
-        final String result = resultData.getString("result");
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                // show result in UI
-            }
-        });
+<pre><code>Intent i = new Intent(SomeService.ACTION_SEND_SOMETHING);
+i.putExtra("parameter", 42);
+sendBroadcast(i);
+</code></pre>
+
+<p>In the service you register the broadcast receiver:</p>
+
+<pre><code>IntentFilter filter = new IntentFilter();
+filter.addAction(ACTION_SEND_SOMETHING);
+SomeReceiver receiver = new SomeReceiver();
+registerReceiver(receiver, filter);
+</code></pre>
+        
+<p>And in onReceive you send back the result:</p>
+
+<pre><code>private class SomeReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(final Context context, Intent intent) {
+        // send back result
+        Bundle resultData = new Bundle();
+        resultData.putString("result", "Here's the result");
+        resultReceiver.send(DATA, resultData);
     }
 }
 </code></pre>
