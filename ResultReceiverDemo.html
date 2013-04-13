@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&amp;lang=css" defer="defer"></script>
 
     <title>Androiddev by ramdroid</title>
   </head>
@@ -27,7 +29,7 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>Problem</h3>
+        <h3>Problem</h3>       
 
 <p>When running a <code>Service</code> you might want to send back some results to the calling <code>Activity</code>.</p>
 
@@ -43,7 +45,7 @@ explaining why I don't want to do this goes beyond this little tutorial.</small>
 
 <p>This is exactly what we need! First we implement the <code>Activity</code> that attaches a <code>ResultReceiver</code> object to the start intent:</p>
 
-<pre><code>Intent i = new Intent(this, SomeService.class);
+<pre class="prettyprint">Intent i = new Intent(this, SomeService.class);
 i.putExtra(SomeService.EXTRA, new ResultReceiver(handler) {
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
@@ -51,7 +53,7 @@ i.putExtra(SomeService.EXTRA, new ResultReceiver(handler) {
     }
 });
 startService(i);
-</code></pre>
+</pre>
 
 <p>Notice the <code>handler</code> parameter in the <code>ResultReceiver</code> constructor:</p>
 
@@ -60,11 +62,11 @@ By adding this handler you make sure you always receive the result back in the U
 
 <p>In the next step we implement the <code>Service</code> code that fires back a result:</p>
 
-<pre><code>ResultReceiver resultReceiver = intent.getParcelableExtra(EXTRA);
+<pre class="prettyprint">ResultReceiver resultReceiver = intent.getParcelableExtra(EXTRA);
 Bundle resultData = new Bundle();
 resultData.putString("result", "This is some text.");
 resultReceiver.send(RESULT, resultData);
-</code></pre>
+</pre>
 
 <p>That's it! Isn't this a nice and elegant way?</p>
 
@@ -74,22 +76,22 @@ resultReceiver.send(RESULT, resultData);
 
 <p>In the activity this is just as simple as sending a broadcast to the service:</p>
 
-<pre><code>Intent i = new Intent(SomeService.ACTION_SEND_SOMETHING);
+<pre class="prettyprint">Intent i = new Intent(SomeService.ACTION_SEND_SOMETHING);
 i.putExtra("parameter", 42);
 sendBroadcast(i);
-</code></pre>
+</pre>
 
 <p>In the service you register the broadcast receiver:</p>
 
-<pre><code>IntentFilter filter = new IntentFilter();
+<pre class="prettyprint">IntentFilter filter = new IntentFilter();
 filter.addAction(ACTION_SEND_SOMETHING);
 SomeReceiver receiver = new SomeReceiver();
 registerReceiver(receiver, filter);
-</code></pre>
+</pre>
         
 <p>And in onReceive you send back the result:</p>
 
-<pre><code>private class SomeReceiver extends BroadcastReceiver {
+<pre class="prettyprint">private class SomeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         // send back result
@@ -98,7 +100,7 @@ registerReceiver(receiver, filter);
         resultReceiver.send(DATA, resultData);
     }
 }
-</code></pre>
+</pre>
 
 <p>Keep in mind that you should return from this callback as quickly as possible. The idea here is that
 you only check some status in the service or add some data into a queue for later processing.</p>

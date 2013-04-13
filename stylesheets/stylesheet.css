@@ -1,3 +1,5 @@
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
 body {
   margin: 0;
   padding: 0;
@@ -5,7 +7,7 @@ body {
   color: #000000;
   font: 16px;
   line-height: 1.5;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* General & 'Reset' Stuff */
@@ -45,9 +47,9 @@ header {
 header h1 {
   font-size: 30px;
   line-height: 1.5;
-  margin: 0 0 0 -40px;
+  margin: 0 0 0 0px;
   font-weight: bold;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: 'Roboto', sans-serif;
   color: #33b5e5;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
                0 0 5px rgba(181, 232, 83, 0.1),
@@ -56,8 +58,7 @@ header h1 {
   -webkit-font-smoothing: antialiased;
 }
 
-header h1:before {
-  content: "./ ";
+header h1 {
   font-size: 24px;
 }
 
@@ -86,7 +87,7 @@ section img {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: 'Roboto', sans-serif;
   color: #0099cc;
   letter-spacing: -0.03em;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
@@ -134,7 +135,7 @@ ul li {
 
 ul li:before {
   content: ">>";
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: 'Roboto', sans-serif;
   font-size: 13px;
   color: #b5e853;
   margin-left: -37px;
@@ -149,8 +150,7 @@ blockquote {
 }
 
 pre {
-  background: rgba(0, 0, 0, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   padding: 10px;
   font-size: 14px;
   color: #00ddff;
@@ -196,7 +196,7 @@ hr {
   border-bottom: 2px solid rgba(0, 0, 0, 0.7);
   border-top: 2px solid rgba(0, 0, 0, 1);
   color: #33b5e5;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   font-size: 13px;
   text-decoration: none;

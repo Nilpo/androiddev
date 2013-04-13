@@ -9,6 +9,8 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&amp;lang=css" defer="defer"></script>
+
     <title>Androiddev by ramdroid</title>
   </head>
 
@@ -31,10 +33,10 @@
 
 <p>When you launch an activity or service you often need to attach some information. In a simple situation this could only be a single value like an integer or string and you can use something like that:</p>
 
-<pre><code>Intent intent = new Intent(this, NewActivity.class);
+<pre class="prettyprint">Intent intent = new Intent(this, NewActivity.class);
 intent.putExtra("value", 42);
 startActivity(intent);
-</code></pre>
+</pre>
 
 <p>If you are using a lot more values then this approach would be little awkward. It would also be useful if you could forward your own classes with an intent.</p>
 
@@ -42,7 +44,7 @@ startActivity(intent);
 
 <p>Actually it's quite easy to do so: you only have to extend your class from <code>Parcelable</code> and define a <code>Parcelable.Creator</code>:</p>
 
-<pre><code>public static final Parcelable.Creator&lt;SomeData&gt; CREATOR = 
+<pre class="prettyprint">public static final Parcelable.Creator&lt;SomeData&gt; CREATOR = 
     new Parcelable.Creator&lt;SomeData>() {
 
     public SomeData createFromParcel(Parcel in) {
@@ -53,11 +55,11 @@ startActivity(intent);
         return new SomeData[size];
     }
 };
-</code></pre>
+</pre>
 
 <p>Then define the functions to read/write the values into the <code>Parcel</code>:</p>
 
-<pre><code>@Override
+<pre class="prettyprint">@Override
 public void writeToParcel(Parcel out, int flags) {
     out.writeInt(someInteger);
     out.writeString(someString);
@@ -67,7 +69,7 @@ private SomeData(Parcel in) {
     this.someInteger = in.readInt();
     this.someString = in.readString();
 }
-</code></pre>
+</pre>
 
 <p>You only need to be careful to read the values in the same order as you wrote them.</p>
 
@@ -75,7 +77,7 @@ private SomeData(Parcel in) {
 
 <p>In some use cases you might have a list of your <code>Parcelable</code> objects. You need to use them like that:</p>
 
-<pre><code>public List&lt;SomeData&gt; someDataList = new ArrayList&lt;SomeData&gt;();
+<pre class="prettyprint">public List&lt;SomeData&gt; someDataList = new ArrayList&lt;SomeData&gt;();
 
 @Override
 public void writeToParcel(Parcel out, int flags) {
@@ -85,7 +87,7 @@ public void writeToParcel(Parcel out, int flags) {
 private SomeData(Parcel in) {
     in.readTypedList(someDataList, SomeData.CREATOR);
 }
-</code></pre>
+</pre>
 
 <h3>Auto-generator</h3>
 
