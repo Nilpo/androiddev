@@ -42,7 +42,7 @@ startActivity(intent);
 
 <h3>Solution</h3>
 
-<p>Actually it's quite easy to do so: you only have to extend your class from <code>Parcelable</code> and define a <code>Parcelable.Creator</code>:</p>
+<p>Actually it's quite easy to do so: you only have to implement the <code>Parcelable</code> interface. First define a <code>Parcelable.Creator</code>:</p>
 
 <pre class="prettyprint">public static final Parcelable.Creator&lt;SomeData&gt; CREATOR = 
     new Parcelable.Creator&lt;SomeData>() {
